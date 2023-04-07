@@ -13,7 +13,7 @@ generator client {
 
 model Account {
   id                String  @id @default(cuid())
-  userId            String
+  userId            Int
   type              String
   provider          String
   providerAccountId String
@@ -33,7 +33,7 @@ model Account {
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
-  userId       String
+  userId       Int
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -43,11 +43,37 @@ model ApiKey {
   key     String       @unique
   enabled Boolean      @default(true)
   User    User         @relation(fields: [userId], references: [id])
-  userId  String
+  userId  Int
   request ApiRequest[]
 
   @@unique([userId, key, enabled])
 }
+
+model ApiPlan {
+  id String @id @default(cuid())
+  name String 
+  enabled Boolean
+  user User @relation(fields: [userId], references: [id])
+  userId Int @unique
+  adventages Advantage[]
+  disadvantages Disadvantage[]
+  rateLimit String
+}
+
+model Advantage {
+  id Int @id @default(autoincrement())
+  advantage String
+  apiPlan ApiPlan @relation(fields: [apiPlanId], references: [id])
+  apiPlanId String 
+}
+
+model Disadvantage {
+  id Int @id @default(autoincrement()) 
+  disadvantage String 
+  apiPlan ApiPlan @relation(fields: [apiPlanId], references: [id])
+  apiPlanId String
+}
+
 
 model ApiRequest {
   id         String   @id @default(cuid())
@@ -64,7 +90,7 @@ model ApiRequest {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            Int    @id @default(autoincrement())
   name          String?
   email         String?   @unique
   emailVerified DateTime?
@@ -72,7 +98,10 @@ model User {
   accounts      Account[]
   sessions      Session[]
   ApiKey        ApiKey[]
+  ApiPlan   ApiPlan?
   apiKeyId      String?
+
+  
 }
 
 model VerificationToken {
