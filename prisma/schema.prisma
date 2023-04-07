@@ -13,7 +13,7 @@ generator client {
 
 model Account {
   id                String  @id @default(cuid())
-  userId            Int
+  userId            String
   type              String
   provider          String
   providerAccountId String
@@ -33,7 +33,7 @@ model Account {
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
-  userId       Int
+  userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -43,24 +43,11 @@ model ApiKey {
   key     String       @unique
   enabled Boolean      @default(true)
   User    User         @relation(fields: [userId], references: [id])
-  userId  Int
+  userId  String
   request ApiRequest[]
 
   @@unique([userId, key, enabled])
 }
-
-model ApiPlan {
-  id Int @id @default(autoincrement())
-  name String 
-  enabled Boolean
-  user User? @relation(fields: [userId], references: [id])
-  userId Int? @unique
-  rateLimit String
-}
-
-
-
-
 
 model ApiRequest {
   id         String   @id @default(cuid())
@@ -77,7 +64,7 @@ model ApiRequest {
 }
 
 model User {
-  id            Int    @id @default(autoincrement())
+  id            String    @id @default(cuid())
   name          String?
   email         String?   @unique
   emailVerified DateTime?
@@ -85,11 +72,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   ApiKey        ApiKey[]
-  ApiPlan   ApiPlan?
   apiKeyId      String?
-  apiPlanId Int?
-
-  
 }
 
 model VerificationToken {
