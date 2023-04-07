@@ -50,29 +50,16 @@ model ApiKey {
 }
 
 model ApiPlan {
-  id String @id @default(cuid())
+  id Int @id @default(autoincrement())
   name String 
   enabled Boolean
-  user User @relation(fields: [userId], references: [id])
-  userId Int @unique
-  adventages Advantage[]
-  disadvantages Disadvantage[]
+  user User? @relation(fields: [userId], references: [id])
+  userId Int? @unique
   rateLimit String
 }
 
-model Advantage {
-  id Int @id @default(autoincrement())
-  advantage String
-  apiPlan ApiPlan @relation(fields: [apiPlanId], references: [id])
-  apiPlanId String 
-}
 
-model Disadvantage {
-  id Int @id @default(autoincrement()) 
-  disadvantage String 
-  apiPlan ApiPlan @relation(fields: [apiPlanId], references: [id])
-  apiPlanId String
-}
+
 
 
 model ApiRequest {
@@ -100,6 +87,7 @@ model User {
   ApiKey        ApiKey[]
   ApiPlan   ApiPlan?
   apiKeyId      String?
+  apiPlanId Int?
 
   
 }
